@@ -19,8 +19,8 @@ int main() {
     cin >> code_of_number;
     
     int length = GetSize(code_of_number);
-
-    if (code_of_number[0] == '1') {
+    
+    if (code_of_number[0] == '1') {                     // Перевод числа в дополнительный код
         for (int i = 1; i < length; i++)
         {
             if (code_of_number[i] == '1')
@@ -45,7 +45,7 @@ int main() {
     return 0;
 }
 
-int GetSize(string& s) {
+int GetSize(string& s) { // Возвращает длину строки
     int size = 0;
 
     while (s[size] != '\0')

@@ -39,7 +39,7 @@ int main()
             int_number_13 += number_13[i];
         }
     }
-    //  for integer part of number
+    //  для целой части числа
     length = GetSize(int_number_13);
 
     for (int i = length - 1, j = 0; i >= 0; i--, j++) {
@@ -64,7 +64,7 @@ int main()
         int_number_3 = '-' + int_number_3;
     }
 
-    //  for fractional part of the number
+    //  для дробной части числа
     length = GetSize(double_number_13);
 
     for (int i = 0; i < length; i++)

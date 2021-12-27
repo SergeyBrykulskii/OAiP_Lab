@@ -14,6 +14,37 @@
 
 using namespace std;
 
+int GetSize(string s);
+int StringToInteger(string str);
+string GetNumber();
+char GetOperation();
+void Erase(string& str, const int& start);
+int action(string& num1, string& num2, char& operation);
+string sequence(string& num1, string& num2);
+string Sum(string& num1, string& num2);
+
+
+int main()
+{
+    setlocale(LC_ALL, "rus");
+    string str1, str2;
+
+    cout << "Программа реализует сложение в одиннацеричной системе счисления\n";
+    cout << "Выберите операцию '+' или '-':\n";
+
+    char operation = GetOperation();
+    cout << "Первое число:   ";
+    str1 = GetNumber();
+
+    cout << "Второе число:   ";
+    str2 = GetNumber();
+
+    if (action(str1, str2, operation)) cout << "Результат:   " << Sum(str1, str2);
+    else cout << "Результат:   " << sequence(str1, str2);
+
+    return 0;
+}
+
 int GetSize(string s) {
     int size = 0;
 
@@ -35,8 +66,7 @@ int StringToInteger(string str) {
     return sign * ans;
 }
 
-string GetNumber()
-{
+string GetNumber() {
     string str;
     bool isNumber;
 
@@ -45,9 +75,9 @@ string GetNumber()
         cin >> str;
         for (int i = 0; i < GetSize(str); i++) {
             if (!isdigit(str[i]) && !(str[i] == '-') && !(str[i] == 'A')) {
-                 cout << "\nНекорректный ввод. Попробуйте ещё раз.\n";
-                 isNumber = false;
-                 break;        
+                cout << "\nНекорректный ввод. Попробуйте ещё раз.\n";
+                isNumber = false;
+                break;
             }
         }
     } while (!isNumber);
@@ -56,8 +86,7 @@ string GetNumber()
 }
 
 
-char GetOperation()
-{
+char GetOperation() {
     string sign;
     bool isOperation = true;
 
@@ -77,8 +106,7 @@ char GetOperation()
     return sign[0];
 }
 
-void myErase(string& str, const int& start)  // удаляет один элемент
-{
+void Erase(string& str, const int& start) {  // удаляет один элемент
     int tmp, size = GetSize(str);
 
     for (int i = start; i < size; i++) {
@@ -88,103 +116,115 @@ void myErase(string& str, const int& start)  // удаляет один элем
     }
 }
 
-
 int action(string& num1, string& num2, char& operation)
 {
-    if ((((num1[0] == '-' && num2[0] == '-') || (num1[0] == '+' && num2[0] == '+')) && operation == '+') || ((num1[0] == '+' && num2[0] == '-') && operation == '-')) return 1;
+    if ((((num1[0] == '-' && num2[0] == '-') || (num1[0] != '-' && num2[0] != '-')) && operation == '+') || ((num1[0] != '-' && num2[0] == '-') && operation == '-')) return 1;
     return 0;   //  Возращает true если выполняется сумма, false в противном случае
 }
 
-string sum(string& num1, string& num2)
-{
+string Sum(string& num1, string& num2) {
     string result;
     char sign = ' ';
+
     if (num1[0] == '-') {
         sign = '-';
-        myErase(num1, 0);
-        myErase(num2, 0);
+        Erase(num1, 0);
+        Erase(num2, 0);
     }
-    if (num2[0] == '-') myErase(num2, 0);
-    string ls1 = GetSize(num1) < GetSize(num2) ? num1 : num2; //little string
-    string ls2 = GetSize(num1) < GetSize(num2) ? num2 : num1;                   //equalize strings
+
+    if (num2[0] == '-') Erase(num2, 0);
+
+    int size1 = GetSize(num1), size2 = GetSize(num2);
+    string shStr, longStr;
+
+    if (size1 <= size2) {
+        shStr = num1;
+        longStr = num2;
+    }
+    else {
+        shStr = num2;
+        longStr = num1;
+    }
+   
     if (GetSize(num1) != GetSize(num2)) {
-        for (int i = GetSize(ls1); i < GetSize(ls2); i++) ls1 = '0' + ls1;
+        for (int i = GetSize(shStr); i < GetSize(longStr); i++) shStr = '0' + shStr;
+    
     }
-    int a = 0, b = 0, f = 0;  //f - remainder
-    for (int i = GetSize(ls1) - 1; i >= 0; i--) {
-        if (ls1[i] == 'A') a = 10;
-        else a = (int)ls1[i] - 48; //convert to digit
-        if (ls2[i] == 'A') b = 10;
-        else b = (int)ls2[i] - 48;
+    int a = 0, b = 0, f = 0;  
+    
+    for (int i = GetSize(shStr) - 1; i >= 0; i--) {
+        if (shStr[i] == 'A') a = 10;
+        else a = shStr[i] - '0'; // перевод в число
+        if (longStr[i] == 'A') b = 10;
+        else b = longStr[i] - '0';
         if ((a + b + f) % 11 == 10) result = 'A' + result;
         else result = (char)(((a + b + f) % 11) + 48) + result;
+
         f = (a + b + f) / 11;
     }
     return sign + result;
 }
 
-string substr(string& num1, string& num2)
-{
-    if (num1[0] == '-') myErase(num1, 0);
-    if (num2[0] == '-') myErase(num2, 0);
+string sequence(string& num1, string& num2) {
     string result;
-    int len1 = GetSize(num1);
-    int len2 = GetSize(num2);
-    string ls1 = len1 < len2 ? num1 : num2;  //smaller str
-    string ls2 = len1 < len2 ? num2 : num1;  //bigger str         //equalize strings
-    if (len1 != len2) {
-        for (int i = GetSize(ls1); i < GetSize(ls2); i++) ls1 = '0' + ls1;   //add zeros
+
+    if (num1[0] == '-') Erase(num1, 0);
+    if (num2[0] == '-') Erase(num2, 0);
+    
+    int len1 = GetSize(num1), len2 = GetSize(num2);
+    string shStr, longStr;
+
+    if (len1 <= len2) {
+        shStr = num1;
+        longStr = num2;
     }
+    else {
+        shStr = num2;
+        longStr = num1;
+    }
+    if (len1 != len2) {
+        for (int i = GetSize(shStr); i < GetSize(longStr); i++) 
+            shStr = '0' + shStr;   //  добавление нулей
+    }
+
     int counter = 0;
     char sign = ' ';
-    if (StringToInteger(num1) - StringToInteger(num2) < 0) sign = '-'; //check sign of result
-    while (counter < GetSize(ls1)) {
-        if ((int)ls1[counter] < (int)ls2[counter]) {
-            swap(ls1, ls2);
-            break;       //find greatest |number| and assign it first
+
+    if (StringToInteger(num1) - StringToInteger(num2) < 0) sign = '-'; //  Проверка знака ответа
+
+    while (counter < GetSize(shStr)) {
+        if ((int)shStr[counter] < (int)longStr[counter]) {
+            swap(shStr, longStr);
+            break;       
         }
         counter++;
     }
+
     string tmp1, tmp2;
-    int a = 0, b = 0, f = 0;  //f - remainder
-    for (int i = 0; i < GetSize(ls2); i++) {
-        tmp1 = ls1[GetSize(ls1) - 1 - i];
-        tmp2 = ls2[GetSize(ls2) - 1 - i];
+    int a = 0, b = 0, f = 0;  
+
+    for (int i = 0; i < GetSize(longStr); i++) {
+        tmp1 = shStr[GetSize(shStr) - 1 - i];
+        tmp2 = longStr[GetSize(longStr) - 1 - i];
+
         if (tmp1[0] == 'A') a = 10 - f;
         else a = StringToInteger(tmp1) - f;
+
         if (tmp2[0] == 'A') b = 10;
         else b = StringToInteger(tmp2);
+
         if (a - b < 0) {
             a += 11;
             f = 1;
         }
         else f = 0;
+
         if (a - b == 10) result = 'A' + result;
         else result = (char)(a - b + 48) + result;
     }
+
     if (f != 0) result = (char)(f + 48) + result;
-    if (result[0] == 0) myErase(result, 0);
+
+    if (result[0] == 0) Erase(result, 0);
     return sign + result;
-}
-
-
-int main()
-{
-    setlocale(LC_ALL, "rus");
-    string str1, str2;
-
-    cout << "Программа реализует сложение в одиннацеричной системе счисления\n";
-    cout << "Выберите операцию '+' или '-':\n";
-
-    char operation = GetOperation();
-    cout << "Первое число:   ";
-    str1 = GetNumber();
-
-    cout << "Второе число:   ";
-    str2 = GetNumber();
-
-    if (action(str1, str2, operation)) cout << "Результат:   " << sum(str1, str2);
-    else cout << "Результат:   " << substr(str1, str2);
-
-    return 0;
 }

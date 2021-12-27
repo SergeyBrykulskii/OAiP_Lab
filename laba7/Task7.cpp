@@ -17,8 +17,8 @@ int main()
     for (int i = 0; i < 3; i++) {
         tmp = abs(a);
 
-        while (tmp > 0) {
-            tmp = Subtraction(tmp, arr[i]);
+        while (tmp > 0) {                         //  отнимаем от исходного числа, нужное простое число(5, 72, 151) с помощью побитовых операций
+            tmp = Subtraction(tmp, arr[i]);       //  пока результат не станет меньше нуля или равным ему
         }
 
         if (tmp == 0) {
@@ -32,7 +32,7 @@ int main()
     return 0;
 }
 
-int Add(int num1, int num2) {
+int Add(int num1, int num2) {      //   сумма чисел с помощью побитовых операций
     int res = 0, carry = 0;
     res = num1 ^ num2;
     carry = (num1 & num2) << 1;
@@ -44,7 +44,7 @@ int Add(int num1, int num2) {
     return res;
 }
 
-int Negative(int& n) {
+int Negative(int& n) {     //  для реализации разности чисел с помощью побитовых операций
     n = ~n;
     return Add(n, 1);
 }
