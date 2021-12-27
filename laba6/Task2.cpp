@@ -13,7 +13,7 @@ bool FindSubstringInEndOFWord(const char* word, const int& lengthOfWord, const c
 
 int main()
 {   
-    char *substring = NULL, *word = NULL, character;
+    char *substring = 0, *word = 0, character;
     int lengthOfSubstr, sizeOfStr = 2;
     
     substring = (char*)malloc(sizeOfStr * sizeof(char)); // memory allocation for the first two elements
